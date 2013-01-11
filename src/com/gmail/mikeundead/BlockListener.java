@@ -1,7 +1,5 @@
 package com.gmail.mikeundead;
 
-import java.util.ArrayList;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
@@ -19,18 +17,14 @@ public class BlockListener implements Listener
 		
 		if(event.getSource().getType() == Material.MYCEL)
 		{
-			
-			this.SetBlocks(event.getBlock().getLocation());
+			this.SetGrowPattern(event.getBlock().getLocation());
 		}		
 		
 		if(event.getSource().getType() == Material.GRASS)
 		{
 			if(event.getBlock().getBiome() == Biome.MUSHROOM_ISLAND)
 			{
-				Location l = event.getBlock().getLocation();
-				
-				this.SetBlocks(event.getBlock().getLocation());
-				
+				this.SetGrowPattern(event.getBlock().getLocation());
 				event.setCancelled(true);
 			}
 		}
@@ -49,32 +43,60 @@ public class BlockListener implements Listener
 		}
 	}	
 	
+	private void SetGrowPattern(Location loc)
+	{
+		int xa = loc.getBlockX();
+    	int za = loc.getBlockZ();
+    	int ya = loc.getBlockY();
+    	
+    	for (int y = ya-1; y < loc.getBlockY()+2; y++)
+    	{
+	    	for (int x = xa-1; x < loc.getBlockX()+2; x++) 
+			{
+				for (int z = za-1; z < loc.getBlockZ()+2; z++) 
+			    {
+					if(z == za-1 && x == xa -1 || z == za-1 && x == xa +1 || z == za+1 && x == xa -1 || z == za+1 && x == xa +1 || z == za && x == xa)
+					{
+						Location l = new Location(loc.getWorld(), x, y, z);
+						
+						if(l.getBlock().getType() == Material.GRASS || l.getBlock().getType() == Material.DIRT)
+						{					
+							l.getBlock().setType(Material.DIRT);
+							l.getBlock().setBiome(Biome.MUSHROOM_ISLAND);
+						}
+					}
+					else
+					{
+						Location l = new Location(loc.getWorld(), x, y, z);
+						
+						if(l.getBlock().getType() == Material.GRASS || l.getBlock().getType() == Material.DIRT)
+						{					
+							l.getBlock().setType(Material.MYCEL);
+							l.getBlock().setBiome(Biome.MUSHROOM_ISLAND);
+						}
+					}
+			    }
+			}
+    	}
+	}
+	
 	private void SetBlocks(Location loc)
 	{
 		int xa = loc.getBlockX();
     	int za = loc.getBlockZ();
+    	int ya = loc.getBlockY();
     	
-		for (int x = xa; x < loc.getBlockX()+5; x++) 
-		{
-			for (int z = za; z < loc.getBlockZ()+5; z++) 
-		    {
-				if(z == za || x == xa)
-				{
-					Location l = new Location(loc.getWorld(), x, loc.getBlockY(), z);
-					
-					if(l.getBlock().getType() != Material.AIR && l.getBlock().getType() != Material.MYCEL)
+    	for (int y = ya-2; y < loc.getBlockY()+3; y++)
+    	{
+			for (int x = xa-2; x < loc.getBlockX()+3; x++) 
+			{
+				for (int z = za-2; z < loc.getBlockZ()+3; z++) 
+			    {
+					if(z == za-2 || x == xa-2)
 					{
-						l.getBlock().setType(Material.DIRT);
-						l.getBlock().setBiome(Biome.MUSHROOM_ISLAND);
-					}
-				}
-				else
-				{
-					if(x == xa+4 || z == za+4)
-					{
-						Location l = new Location(loc.getWorld(), x, loc.getBlockY(), z);
+						Location l = new Location(loc.getWorld(), x, y, z);
 						
-						if(l.getBlock().getType() != Material.AIR && l.getBlock().getType() != Material.MYCEL)
+						if(l.getBlock().getType() == Material.GRASS || l.getBlock().getType() == Material.DIRT)
 						{
 							l.getBlock().setType(Material.DIRT);
 							l.getBlock().setBiome(Biome.MUSHROOM_ISLAND);
@@ -82,15 +104,29 @@ public class BlockListener implements Listener
 					}
 					else
 					{
-						Location l = new Location(loc.getWorld(), x, loc.getBlockY(), z);
-						if(l.getBlock().getType() != Material.AIR && l.getBlock().getType() != Material.MYCEL)
+						if(x == xa+2 || z == za+2)
 						{
-							l.getBlock().setType(Material.MYCEL);
-							l.getBlock().setBiome(Biome.MUSHROOM_ISLAND);
+							Location l = new Location(loc.getWorld(), x, loc.getBlockY(), z);
+							
+							if(l.getBlock().getType() == Material.GRASS)
+							{
+								l.getBlock().setType(Material.DIRT);
+								l.getBlock().setBiome(Biome.MUSHROOM_ISLAND);
+							}
+						}
+						else
+						{
+							Location l = new Location(loc.getWorld(), x, y, z);
+							
+							if(l.getBlock().getType() == Material.GRASS || l.getBlock().getType() == Material.DIRT)
+							{
+								l.getBlock().setType(Material.MYCEL);
+								l.getBlock().setBiome(Biome.MUSHROOM_ISLAND);
+							}
 						}
 					}
-				}
-		    }
-		}
+			    }
+			}
+    	}
 	}
 }
