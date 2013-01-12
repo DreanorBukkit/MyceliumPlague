@@ -14,7 +14,6 @@ public class BlockListener implements Listener
 	@EventHandler
     public void onSpread(BlockSpreadEvent event) 
 	{
-		
 		if(event.getSource().getType() == Material.MYCEL)
 		{
 			this.SetGrowPattern(event.getBlock().getLocation());
@@ -55,7 +54,7 @@ public class BlockListener implements Listener
 			{
 				for (int z = za-1; z < loc.getBlockZ()+2; z++) 
 			    {
-					if(z == za-1 && x == xa -1 || z == za-1 && x == xa +1 || z == za+1 && x == xa -1 || z == za+1 && x == xa +1 || z == za && x == xa)
+					if(z == za-1 && x == xa -1 || z == za-1 && x == xa +1 || z == za+1 && x == xa -1 || z == za+1 && x == xa +1)
 					{
 						Location l = new Location(loc.getWorld(), x, y, z);
 						
