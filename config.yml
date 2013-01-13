@@ -1,0 +1,4 @@
+# Put in all the ID's of blocks that the Plague should spread on
+AllowedBlocks:
+- 2 # Please don't remove
+- 3 # Please don't remove

@@ -11,6 +11,13 @@ import org.bukkit.event.block.BlockSpreadEvent;
 
 public class BlockListener implements Listener 
 {
+	private ConfigHandler config;
+
+	public BlockListener(ConfigHandler configHandler) 
+	{
+		this.config = configHandler;
+	}
+
 	@EventHandler
     public void onSpread(BlockSpreadEvent event) 
 	{
@@ -36,9 +43,7 @@ public class BlockListener implements Listener
 
 		if(placedBlock.getType() == Material.MYCEL)
 		{
-			Location loc = placedBlock.getLocation();
-			
-			this.SetBlocks(loc);
+			this.SetBlocksOnPlace(placedBlock.getLocation());
 		}
 	}	
 	
@@ -58,7 +63,7 @@ public class BlockListener implements Listener
 					{
 						Location l = new Location(loc.getWorld(), x, y, z);
 						
-						if(l.getBlock().getType() == Material.GRASS || l.getBlock().getType() == Material.DIRT)
+						if(this.BlockIsListed(l.getBlock().getType()))
 						{					
 							l.getBlock().setType(Material.DIRT);
 							l.getBlock().setBiome(Biome.MUSHROOM_ISLAND);
@@ -68,7 +73,7 @@ public class BlockListener implements Listener
 					{
 						Location l = new Location(loc.getWorld(), x, y, z);
 						
-						if(l.getBlock().getType() == Material.GRASS || l.getBlock().getType() == Material.DIRT)
+						if(this.BlockIsListed(l.getBlock().getType()))
 						{					
 							l.getBlock().setType(Material.MYCEL);
 							l.getBlock().setBiome(Biome.MUSHROOM_ISLAND);
@@ -79,7 +84,20 @@ public class BlockListener implements Listener
     	}
 	}
 	
-	private void SetBlocks(Location loc)
+	private boolean BlockIsListed(Material material) 
+	{
+		for(Material block : this.config.AllowedBlocks)
+		{
+			if(material == block)
+			{
+				return true;
+			}
+		}
+		
+		return false;
+	}
+
+	private void SetBlocksOnPlace(Location loc)
 	{
 		int xa = loc.getBlockX();
     	int za = loc.getBlockZ();
@@ -95,7 +113,7 @@ public class BlockListener implements Listener
 					{
 						Location l = new Location(loc.getWorld(), x, y, z);
 						
-						if(l.getBlock().getType() == Material.GRASS || l.getBlock().getType() == Material.DIRT)
+						if(this.BlockIsListed(l.getBlock().getType()))
 						{
 							l.getBlock().setType(Material.DIRT);
 							l.getBlock().setBiome(Biome.MUSHROOM_ISLAND);
@@ -107,7 +125,7 @@ public class BlockListener implements Listener
 						{
 							Location l = new Location(loc.getWorld(), x, loc.getBlockY(), z);
 							
-							if(l.getBlock().getType() == Material.GRASS)
+							if(this.BlockIsListed(l.getBlock().getType()))
 							{
 								l.getBlock().setType(Material.DIRT);
 								l.getBlock().setBiome(Biome.MUSHROOM_ISLAND);
@@ -117,7 +135,7 @@ public class BlockListener implements Listener
 						{
 							Location l = new Location(loc.getWorld(), x, y, z);
 							
-							if(l.getBlock().getType() == Material.GRASS || l.getBlock().getType() == Material.DIRT)
+							if(this.BlockIsListed(l.getBlock().getType()))
 							{
 								l.getBlock().setType(Material.MYCEL);
 								l.getBlock().setBiome(Biome.MUSHROOM_ISLAND);
