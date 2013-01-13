@@ -1,4 +1,11 @@
 # Put in all the ID's of blocks that the Plague should spread on
+# Add new blocks like this (the order doesn't matter):
+# AllowedBlocks:
+# - 2
+# - 3
+# - 64
+# - 5
+
 AllowedBlocks:
 - 2 # Please don't remove
 - 3 # Please don't remove
