@@ -1,3 +1,7 @@
 name: MyceliumPlague
 main: com.gmail.mikeundead.MyceliumPlague
-version: 1.0
+version: 1.1
+commands:
+  rollback:
+    description: Resets everything that has ever been spread on
+    usage: /rollback
