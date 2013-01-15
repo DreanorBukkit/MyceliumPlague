@@ -15,6 +15,7 @@ public class BlockListener implements Listener
 {
 	private ConfigHandler config;
 	private SpreadingHandler spread;
+	private Biome bio;
 	
 	public BlockListener(ConfigHandler configHandler, SpreadingHandler spreadingHandler) 
 	{
@@ -52,10 +53,12 @@ public class BlockListener implements Listener
 
 		if(placedBlock.getType() == Material.MYCEL)
 		{
+			this.bio =  event.getBlockReplacedState().getBlock().getBiome();
+			
 			Location location = placedBlock.getLocation();
 			
 			HashMap<Material, Biome> map = new HashMap<Material, Biome>();
-			map.put(event.getBlockReplacedState().getType(), event.getBlockReplacedState().getBlock().getBiome());
+			map.put(event.getBlockReplacedState().getType(), this.bio);
 			this.spread.spreadLocations.put(location, map);
 			
 			this.SetBlocksOnPlace(location);
@@ -76,50 +79,17 @@ public class BlockListener implements Listener
 			    {
 					if(z == za-1 && x == xa -1 || z == za-1 && x == xa +1 || z == za+1 && x == xa -1 || z == za+1 && x == xa +1)
 					{
-						Location location = new Location(loc.getWorld(), x, y, z);
-						
-						if(this.BlockIsListed(location.getBlock().getType()))
-						{					
-							HashMap<Material, Biome> map = new HashMap<Material, Biome>();
-							map.put(location.getBlock().getType(), Biome.PLAINS);
-							this.spread.spreadLocations.put(location, map);
-							
-							location.getBlock().setType(Material.DIRT);
-							location.getBlock().setBiome(Biome.MUSHROOM_ISLAND);
-						}
+						this.DirtPattern(loc, y, x, z);
 					}
 					else
 					{
-						Location location = new Location(loc.getWorld(), x, y, z);
-						
-						if(this.BlockIsListed(location.getBlock().getType()))
-						{			
-							HashMap<Material, Biome> map = new HashMap<Material, Biome>();
-							map.put(location.getBlock().getType(), Biome.PLAINS);
-							this.spread.spreadLocations.put(location, map);
-							
-							location.getBlock().setType(Material.MYCEL);
-							location.getBlock().setBiome(Biome.MUSHROOM_ISLAND);
-						}
+						this.MycelPattern(loc, y, x, z);
 					}
 			    }
 			}
     	}
 	}
 	
-	private boolean BlockIsListed(Material material) 
-	{
-		for(Material block : this.config.AllowedBlocks)
-		{
-			if(material == block)
-			{
-				return true;
-			}
-		}
-		
-		return false;
-	}
-
 	private void SetBlocksOnPlace(Location loc)
 	{
 		int xa = loc.getBlockX();
@@ -134,51 +104,64 @@ public class BlockListener implements Listener
 			    {
 					if(z == za-2 || x == xa-2)
 					{
-						Location location = new Location(loc.getWorld(), x, y, z);
-						
-						if(this.BlockIsListed(location.getBlock().getType()))
-						{
-							HashMap<Material, Biome> map = new HashMap<Material, Biome>();
-							map.put(location.getBlock().getType(), Biome.PLAINS);
-							this.spread.spreadLocations.put(location, map);
-							
-							location.getBlock().setType(Material.DIRT);
-							location.getBlock().setBiome(Biome.MUSHROOM_ISLAND);
-						}
+						this.DirtPattern(loc, y, x, z);
 					}
 					else
 					{
 						if(x == xa+2 || z == za+2)
 						{
-							Location location = new Location(loc.getWorld(), x, y, z);
-							
-							if(this.BlockIsListed(location.getBlock().getType()))
-							{
-								HashMap<Material, Biome> map = new HashMap<Material, Biome>();
-								map.put(location.getBlock().getType(), Biome.PLAINS);
-								this.spread.spreadLocations.put(location, map);
-								
-								location.getBlock().setType(Material.DIRT);
-								location.getBlock().setBiome(Biome.MUSHROOM_ISLAND);
-							}
+							this.DirtPattern(loc, y, x, z);
 						}
 						else
 						{
-							Location location = new Location(loc.getWorld(), x, y, z);
-							
-							if(this.BlockIsListed(location.getBlock().getType()))
-							{
-								HashMap<Material, Biome> map = new HashMap<Material, Biome>();
-								map.put(location.getBlock().getType(), Biome.PLAINS);
-								this.spread.spreadLocations.put(location, map);
-								
-								location.getBlock().setType(Material.MYCEL);
-								location.getBlock().setBiome(Biome.MUSHROOM_ISLAND);
-							}
+							this.MycelPattern(loc, y, x, z);
 						}
 					}
 			    }
 			}
     	}
+	}
+	
+	private void DirtPattern(Location loc, int y, int x, int z) 
+	{
+		Location location = new Location(loc.getWorld(), x, y, z);
+		
+		if(this.BlockIsListed(location.getBlock().getType()))
+		{					
+			HashMap<Material, Biome> map = new HashMap<Material, Biome>();
+			map.put(location.getBlock().getType(), this.bio);
+			this.spread.spreadLocations.put(location, map);
+			;
+			location.getBlock().setType(Material.DIRT);
+			location.getBlock().setBiome(Biome.MUSHROOM_ISLAND);
+		}
+	}
+
+	private void MycelPattern(Location loc, int y, int x, int z) 
+	{
+		Location location = new Location(loc.getWorld(), x, y, z);
+		
+		if(this.BlockIsListed(location.getBlock().getType()))
+		{			
+			HashMap<Material, Biome> map = new HashMap<Material, Biome>();
+			map.put(location.getBlock().getType(), this.bio);
+			this.spread.spreadLocations.put(location, map);
+			
+			location.getBlock().setType(Material.MYCEL);
+			location.getBlock().setBiome(Biome.MUSHROOM_ISLAND);
+		}
+	}
+	
+	private boolean BlockIsListed(Material material) 
+	{
+		for(Material block : this.config.AllowedBlocks)
+		{
+			if(material == block)
+			{
+				return true;
+			}
+		}
+		
+		return false;
 	}
 }

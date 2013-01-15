@@ -164,7 +164,8 @@ public class SpreadingHandler
 				this.config.set(i+".Location.Z", null);
 				this.config.set(i+".Material", null);
 				this.config.set(i+".Biome", null);
-
+				this.config.set(i+"", null);
+				
 				countReset++;
 			}
 			else
